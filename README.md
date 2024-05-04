@@ -82,7 +82,7 @@ AcumulatedRevenue AS (
 
 ```
 
-## COSTUMERS
+## CUSTOMERS
 
 * 3- How much each customers paid until "now"?
 
