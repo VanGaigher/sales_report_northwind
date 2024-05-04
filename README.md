@@ -33,4 +33,51 @@ The Northwind dataset includes sample data for the following:
 
 ![northwind](https://github.com/VanGaigher/sales_report_northwind/blob/main/pics/northwind_relationship.png)
 
-Através deste projeto, esperamos capacitar as empresas a extrair insights valiosos de seus dados e, assim, impulsionar o sucesso e a eficácia de suas operações.
+# Analysis
+
+## REVENUE
+* 1- What were the revenue in 1997?
+``` sql
+SELECT SUM((order_details.unit_price) * order_details.quantity * (1.0 - order_details.discount)) AS total_revenues_1997
+FROM order_details
+INNER JOIN (
+    SELECT order_id 
+    FROM orders 
+    WHERE EXTRACT(YEAR FROM order_date) = '1997'
+) AS ord 
+ON ord.order_id = order_details.order_id;
+```
+
+* 2- Monthly Growth Analysis and YTD Calculation
+``` sql
+WITH MonthlyRevenue AS (
+	SELECT
+		EXTRACT (YEAR FROM o.order_date) AS year,
+		EXTRACT (MONTH FROM o.order_date) AS month,
+		SUM ((os.unit_price*os.quantity)*(1.0-os.discount)) AS total_revenue
+	FROM
+		orders AS o
+	INNER JOIN
+		order_details AS os ON o.order_id = os.order_id
+	GROUP BY 1, 2
+	),
+	
+AcumulatedRevenue AS (
+	SELECT
+		year,
+		month,
+		total_revenue,
+		SUM (total_revenue) OVER (PARTITION BY year ORDER BY month) AS acumulated_revenue 
+	FROM
+		MonthlyRevenue
+)
+ SELECT 
+ 	year,
+	month,
+	acumulated_revenue,
+	total_revenue- LAG(total_revenue) OVER (PARTITION BY year ORDER BY month) AS month_difference,
+	(total_revenue - LAG(total_revenue) OVER (PARTITION BY year ORDER BY month)) / LAG(total_revenue) OVER (PARTITION BY year ORDER BY month) * 100 AS month_difference_percentual
+ FROM AcumulatedRevenue
+ ORDER BY 1, 2;
+
+```
