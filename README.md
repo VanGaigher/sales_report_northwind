@@ -31,6 +31,6 @@ The Northwind dataset includes sample data for the following:
 
  The Northwind database includes 14 tables, and the relationships between the tables are shown in the following entity relationship diagram.
 
-![northwind](https://github.com/VanessaGaigher/sales_report_northwind/blob/main/pics/northwindrelatioonship.png?raw=true)
+![northwind](https://github.com/VanGaigher/sales_report_northwind/blob/main/pics/northwind_relationship.png)
 
 Através deste projeto, esperamos capacitar as empresas a extrair insights valiosos de seus dados e, assim, impulsionar o sucesso e a eficácia de suas operações.
