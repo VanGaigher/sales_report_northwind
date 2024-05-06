@@ -9,12 +9,67 @@ In the corporate environment, the ability to extract valuable insights from data
 The main goal of this project is to provide analytical tools which are able to help companies to understand better their data and, for consequence, taking more informated and strategics iniformations
 Using SQL queries, will be explored differents aspects from NorthWind database, since revenue analysis until customers segmentation and the top sellers products.
 
-## Setup:
+# Northwind Database Setup Guide
 
 To iniciate it will be necessary setup the development envieroment. It could be done manually, using the file ##### to create the NorthWind database.
 The other choice (and I suppose to be the best one) is using Docker and Docker Compose, following the steps provided above:
 
-< STEPS TO USE DOCKER FILES>
+## Initial Setup
+
+### Manually
+
+Use the provided SQL file, `northwind.sql`, to populate your database.
+
+### With Docker and Docker Compose
+
+**Pre requisite**: Install Docker and Docker Compose
+
+* [Get started with Docker](https://www.docker.com/get-started)
+* [Install Docker Compose](https://docs.docker.com/compose/install/)
+
+### Steps for Docker setup:
+
+1. **Start Docker Compose** 
+
+   Run the following command to bring up the services:
+    
+    ```
+    docker-compose up
+    ```
+    
+    Wait for configuration messages.
+
+2. **Connect PgAdmin** 
+
+   Access PgAdmin via the URL: [http://localhost:5050](http://localhost:5050), with the password `postgres`. 
+
+   Configure a new server in PgAdmin:
+    
+    * **General Tab**:
+        * Name: db_name
+    * **Connection Tab**:
+        * Host name/address: db_name
+        * Username: postgres
+        * Password: postgres 
+        * Then, select the database "northwind".
+
+3. **Stop Docker Compose** 
+
+   Stop the server started by the `docker-compose up` command using Ctrl-C and remove the containers with:
+    
+    ```
+    docker-compose down
+    ```
+    
+4. **Files and Persistence** 
+
+   Your modifications to the Postgres databases will be persisted in the Docker volume `postgresql_data` and can be retrieved by restarting Docker Compose with `docker-compose up`. To delete the database data, execute:
+    
+    ```
+    docker-compose down -v
+    ```
+
+
 
 ## Context:
 
@@ -141,4 +196,37 @@ SELECT
 FROM MarketingCampaign
 WHERE customers_group BETWEEN 4 AND 5;
 ```
- 
+
+* 6- Which UK customers paid more than 1000 dollars?
+
+```sql
+SELECT
+    c.company_name,
+    c.contact_name,
+    SUM((unit_price * quantity) * (1 - discount)) AS total_sales,
+    c.country
+FROM customers AS c
+    INNER JOIN orders AS o ON c.customer_id = o.customer_id
+    INNER JOIN order_details AS ord ON o.order_id = ord.order_id
+WHERE UPPER(c.country) = 'UK'
+GROUP BY 1, 2, 4
+HAVING SUM((unit_price * quantity) * (1 - discount)) > 1000
+ORDER BY total_sales DESC;
+
+```
+
+ ## TOP 10: BEST PRODUCTS
+
+ * 7- which are the 10 products most sold?
+
+ ```sql
+SELECT
+	p.product_name,
+	SUM(ord.quantity) AS total_unity,
+	SUM ((ord.quantity * ord.unit_price)* (1-ord.discount)) AS sales
+FROM
+	order_details AS ord
+INNER JOIN products AS p ON ord.product_id = p.product_id
+GROUP BY 1
+ORDER BY 3 DESC;
+ ```
