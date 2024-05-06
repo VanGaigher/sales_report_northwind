@@ -46,9 +46,9 @@ Use the provided SQL file, `northwind.sql`, to populate your database.
    Configure a new server in PgAdmin:
     
     * **General Tab**:
-        * Name: db_name
+        * Name: db
     * **Connection Tab**:
-        * Host name/address: db_name
+        * Host name/address: db
         * Username: postgres
         * Password: postgres 
         * Then, select the database "northwind".

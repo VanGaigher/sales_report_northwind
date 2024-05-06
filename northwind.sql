@@ -1,5 +1,5 @@
 --
--- PostgreSQL database 
+-- PostgreSQL database dump
 --
 
 SET statement_timeout = 0;
@@ -3910,7 +3910,7 @@ ALTER TABLE ONLY employees
 -- PostgreSQL database dump complete
 --
 
-CREATE VIEW total_revenues_1997_view AS
+CREATE VIEW total_revenues_1997 AS
 SELECT SUM((order_details.unit_price) * order_details.quantity * (1.0 - order_details.discount)) AS total_revenues_1997
 FROM order_details
 INNER JOIN (
@@ -3920,7 +3920,7 @@ INNER JOIN (
 ) AS ord 
 ON ord.order_id = order_details.order_id;
 
-CREATE VIEW view_receitas_acumuladas AS
+CREATE VIEW montly_revenue_view AS
 WITH MonthlyRevenue AS (
 	SELECT
 		EXTRACT (YEAR FROM o.order_date) AS year,
@@ -3965,7 +3965,7 @@ FROM customers as c
 GROUP BY 1,2,3
 ORDER BY sales_for_customers DESC;
 
-CREATE VIEW revenues_per_customer_group AS
+CREATE VIEW total_revenues_customer_group AS
     SELECT 
 	c.customer_id,
 	c.company_name,
@@ -3978,9 +3978,9 @@ FROM customers as c
 	INNER JOIN 
 		order_details AS ord ON o.order_id = ord.order_id
 GROUP BY 1,2,3
-ORDER BY sales_for_customers DESC;;
+ORDER BY sales_for_customers DESC;
 
-CREATE VIEW clients_to_marketing AS
+CREATE VIEW customers_to_marketing AS
 WITH MarketingCampaign AS (
 	SELECT 
 		c.customer_id,
@@ -4012,7 +4012,7 @@ INNER JOIN products AS p ON ord.product_id = p.product_id
 GROUP BY 1
 ORDER BY 3 DESC;
 
-CREATE VIEW customer_uk_paid_more_1000 AS
+CREATE VIEW uk_customers_who_pay_more_1000 AS
 SELECT
     c.company_name,
     c.contact_name,
